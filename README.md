@@ -1,0 +1,1 @@
+[Ссылка](https://docs.google.com/spreadsheets/d/1AGRRAxg_FSaW0N-SwlE21lN2aLQ61Hln8vmEJI-CYXU/edit?usp=sharing) на таблицу сравнения
