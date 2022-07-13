@@ -8,515 +8,26 @@
     <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"></script>
-    <style type="text/css">
+    <style>
         .title {
             text-align: center;
             font-weight: bold;
             font-size: larger;
         }
     </style>
-    <script src="static/jquery.min.js"></script>
-    <script src="static/d3_v6-7.min.js"></script>
-    <script src="static/plotly-latest.min.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            let begin;
-            let end;
-            // hist
-            {
-                let layout = {
-                    title: 'Plotly hist for 100 values',
-                    height: 500,
-                    xaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            },
-                            text: 'values'
-                        }
-                    },
-                    yaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            },
-                            text: 'samples'
-                        }
-                    },
-                    autosize: true,
-                };
-                // -------------------- PLOTLY --------------------
-                let data = get_data('hist', 100);
+    <script src="static/libs/jquery.min.js"></script>
+    <script src="static/libs/d3_v6-7.min.js"></script>
+    <script src="static/libs/plotly-latest.min.js"></script>
+    <!--        <script src="static/libs/t3.min.js"></script>-->
+    <script src="static/libs/chart.min.js"></script>
+    <script src="static/libs/chartjs-plugin-zoom.min.js"></script>
 
-                let steps = [];
-                for (let s = 1; s < 1001; s += 10) {
-                    steps.push({
-                        label: s,
-                        value: s,
-                        method: 'restyle',
-                        args: ['nbinsx', s]
-                    })
-                }
-                layout['sliders'] = [{
-                    active: 2,
-                    pad: {
-                        t: 60
-                    },
-                    currentvalue: {
-                        prefix: 'число бинов: ',
-                        font: {
-                            color: '#888',
-                            size: 10
-                        }
-                    },
-                    steps: steps
-                }];
-
-                let plot = [
-                    {
-                        x: data,
-                        type: 'histogram',
-                        opacity: 0.5,
-                        nbinx: 21,
-                    }
-                ];
-                begin = Date.now();
-                Plotly.newPlot('hist-plotly-2', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#hist-plotly-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('hist', 1000);
-                layout.title = 'Plotly hist for 1000 values'
-                plot[0].x = data;
-                begin = Date.now();
-                Plotly.newPlot('hist-plotly-3', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#hist-plotly-3').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('hist', 10000);
-                layout.title = 'Plotly hist for 10000 values'
-                plot[0].x = data;
-                begin = Date.now();
-                Plotly.newPlot('hist-plotly-4', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#hist-plotly-4').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-            }
-
-            // scatter
-            {
-                let layout = {
-                    title: 'Plotly scatter for 100 dots',
-                    height: 500,
-                    xaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            },
-                            text: 'axis x'
-                        }
-                    },
-                    yaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            },
-                            text: 'axis y'
-                        }
-                    },
-                    autosize: true,
-                };
-                // -------------------- PLOTLY --------------------
-                let data = get_data('scatter', 100);
-                let plot = [
-                    {
-                        type: 'scatter',
-                        mode: 'markers',
-                        x: data['x1'],
-                        y: data['x2'],
-                    }
-                ];
-                begin = Date.now();
-                Plotly.newPlot('scatter-plotly-2', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#scatter-plotly-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('scatter', 1000);
-                layout.title = 'Plotly scatter for 1000 dots'
-                plot[0].x = data['x1'];
-                plot[0].y = data['x2'];
-                begin = Date.now();
-                Plotly.newPlot('scatter-plotly-3', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#scatter-plotly-3').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('scatter', 10000);
-                layout.title = 'Plotly scatter for 10000 dots'
-                plot[0].x = data['x1'];
-                plot[0].y = data['x2'];
-                begin = Date.now();
-                Plotly.newPlot('scatter-plotly-4', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#scatter-plotly-4').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-            }
-
-            // scatter-wl
-            {
-                let layout = {
-                    title: 'Plotly scatter for 100 dots',
-                    height: 500,
-                    xaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            },
-                            text: 'axis x'
-                        }
-                    },
-                    yaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            },
-                            text: 'axis y'
-                        }
-                    },
-                    autosize: true,
-                };
-                // -------------------- PLOTLY --------------------
-                let data = get_data('scatter', 100);
-                let plot = [
-                    {
-                        type: 'scatter',
-                        x: data['x1'],
-                        y: data['x2'],
-                    }
-                ];
-                begin = Date.now();
-                Plotly.newPlot('scatter-wl-plotly-2', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#scatter-wl-plotly-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('scatter', 1000);
-                layout.title = 'Plotly scatter with lines for 1000 dots'
-                plot[0].x = data['x1'];
-                plot[0].y = data['x2'];
-                begin = Date.now();
-                Plotly.newPlot('scatter-wl-plotly-3', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#scatter-wl-plotly-3').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('scatter', 10000);
-                layout.title = 'Plotly scatter with lines for 10000 dots'
-                plot[0].x = data['x1'];
-                plot[0].y = data['x2'];
-                begin = Date.now();
-                Plotly.newPlot('scatter-wl-plotly-4', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#scatter-wl-plotly-4').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-            }
-
-            // boxplot
-            {
-                // -------------------- PLOTLY --------------------
-                let layout = {
-                    title: 'Plotly boxplot for 100 values',
-                    height: 500,
-                    xaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            }
-                        }
-                    },
-                    yaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            }
-                        }
-                    },
-                    autosize: true,
-                };
-
-                let data = get_data('boxplot', 100);
-                let plot = [];
-                for (let i in data) {
-                    plot.push({
-                        type: 'box',
-                        name: i,
-                        y: Object.values(data[i]),
-                        showlegend: false
-                    });
-                }
-                begin = Date.now();
-                Plotly.newPlot('boxplot-plotly-2', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#boxplot-plotly-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('boxplot', 1000);
-                layout.title = 'Plotly boxplot for 1000 values'
-                plot = [];
-                for (let i in data) {
-                    plot.push({
-                        type: 'box',
-                        name: i,
-                        y: Object.values(data[i]),
-                        showlegend: false
-                    });
-                }
-                begin = Date.now();
-                Plotly.newPlot('boxplot-plotly-3', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#boxplot-plotly-3').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('boxplot', 10000);
-                layout.title = 'Plotly boxplot for 10000 values'
-                plot = [];
-                for (let i in data) {
-                    plot.push({
-                        type: 'box',
-                        name: i,
-                        y: Object.values(data[i]),
-                        showlegend: false
-                    });
-                }
-                begin = Date.now();
-                Plotly.newPlot('boxplot-plotly-4', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#boxplot-plotly-4').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-            }
-
-            // bar
-            {
-                // -------------------- PLOTLY --------------------
-                let layout = {
-                    title: 'Plotly bar for 100 values',
-                    height: 500,
-                    xaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            }
-                        }
-                    },
-                    yaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            }
-                        }
-                    },
-                    autosize: true,
-                };
-
-                let data = get_data('boxplot', 100);
-                let plot = [];
-                for (let i in data) {
-                    plot.push({
-                        x: [i],
-                        y: [Object.values(data[i])[0]],
-                        name: i,
-                        marker: {color: 'rgb(135, 206, 250)'},
-                        error_y: {
-                            type: 'data',
-                            array: [(Object.values(data[i])[2] - Object.values(data[i])[1]) / 2],
-                            visible: true
-                        },
-                        type: 'bar',
-                        showlegend: false
-
-                    });
-                }
-                begin = Date.now();
-                Plotly.newPlot('bar-plotly-2', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#bar-plotly-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('boxplot', 1000);
-                layout.title = 'Plotly bar for 1000 values'
-                plot = [];
-                for (let i in data) {
-                    plot.push({
-                        x: [i],
-                        y: [Object.values(data[i])[0]],
-                        name: i,
-                        marker: {color: 'rgb(135, 206, 250)'},
-                        error_y: {
-                            type: 'data',
-                            array: [(Object.values(data[i])[2] - Object.values(data[i])[1]) / 2],
-                            visible: true
-                        },
-                        type: 'bar',
-                        showlegend: false
-
-                    });
-                }
-                begin = Date.now();
-                Plotly.newPlot('bar-plotly-3', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#bar-plotly-3').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('boxplot', 10000);
-                layout.title = 'Plotly bar for 10000 values'
-                plot = [];
-                for (let i in data) {
-                    plot.push({
-                        x: [i],
-                        y: [Object.values(data[i])[0]],
-                        name: i,
-                        marker: {color: 'rgb(135, 206, 250)'},
-                        error_y: {
-                            type: 'data',
-                            array: [(Object.values(data[i])[2] - Object.values(data[i])[1]) / 2],
-                            visible: true
-                        },
-                        type: 'bar',
-                        showlegend: false
-
-                    });
-                }
-                begin = Date.now();
-                Plotly.newPlot('bar-plotly-4', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#bar-plotly-4').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-            }
-
-            // parallel
-            {
-                // -------------------- PLOTLY --------------------
-                let layout = {
-                    title: 'Plotly parallel for 10 pairs',
-                    height: 900,
-                    xaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            }
-                        }
-                    },
-                    yaxis: {
-                        title: {
-                            font: {
-                                size: 12,
-                                color: '#7f7f7f'
-                            }
-                        }
-                    },
-                    autosize: true,
-                };
-                let data = get_data('parallel', 10);
-                let plot = [
-                    {
-                        type: 'parcats',
-                        dimensions: [
-                            {
-                                label: 'first axis',
-                                values: data['x1']
-                            },
-                            {
-                                label: 'second axis',
-                                values: data['x2']
-                            }
-                        ],
-                    }
-                ];
-                begin = Date.now();
-                Plotly.newPlot('parallel-plotly-2', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#parallel-plotly-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('parallel', 50);
-                layout.title = 'Plotly parallel for 50 pairs'
-                plot[0].dimensions[0].values = data['x1'];
-                plot[0].dimensions[1].values = data['x2'];
-                begin = Date.now();
-                Plotly.newPlot('parallel-plotly-3', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#parallel-plotly-3').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-
-                data = get_data('parallel', 100);
-                layout.title = 'Plotly parallel for 100 pairs'
-                plot[0].dimensions[0].values = data['x1'];
-                plot[0].dimensions[1].values = data['x2'];
-                begin = Date.now();
-                Plotly.newPlot('parallel-plotly-4', plot, layout, {responsive: true});
-                end = Date.now();
-                $('#parallel-plotly-4').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
-            }
-        })
-
-        function get_data(type, size) {
-            let max;
-            let min;
-            let output;
-            switch (type) {
-                case 'hist':
-                    max = Math.floor(Math.random() * 100);
-                    min = max - 500;
-                    output = [];
-                    for (let i = 0; i < size; i++) {
-                        output.push(Math.random() * (max - min) + min);
-                    }
-                    return output;
-
-                case 'scatter':
-                    max = Math.floor(Math.random() * 100);
-                    min = max - 500;
-                    output = {'x1': [], 'x2': []};
-                    for (let i = 0; i < size; i++) {
-                        output['x1'].push(Math.random() * (max - min) + min);
-                        output['x2'].push(Math.random() * (max - min) + min);
-                    }
-                    return output;
-
-                // case 'scatter-wl':
-                //     // the same data as for scatter
-                //     break;
-
-                case 'boxplot':
-                    output = {};
-                    for (let val = 1; val !== 6; val++) {
-                        max = Math.floor(Math.random() * 100);
-                        min = max - 200;
-
-                        let key = Math.random() * (2 - 0.1) + 0.1;
-                        output[key] = [];
-                        for (let i = 0; i < size / 5; i++) {
-                            output[key].push(Math.random() * (max - min) + min);
-                        }
-                    }
-                    return output;
-
-                // case 'bar':
-                //     // the same data as for boxplot
-                //     break;
-
-                case 'parallel':
-                    max = Math.floor(Math.random() * 100);
-                    min = max - 200;
-                    output = {'x1': [], 'x2': []};
-                    for (let i = 0; i < size; i++) {
-                        output['x1'].push(Math.random() * (max - min) + min);
-                        output['x2'].push(Math.random() * (max - min) + min);
-                    }
-                    return output;
-
-                default:
-                    return output;
-            }
-        }
-    </script>
+    <script src="static/common.js"></script>
+    <script src="static/plotly_plots.js"></script>
+    <script src="static/d3js_plots.js"></script>
+    <script src="static/chartjs_plots.js"></script>
+    <script src="static/c3js_plots.js"></script>
+    <script src="static/t3js_plots.js"></script>
 </head>
 <body>
 <div id="title" class="row">
@@ -527,7 +38,7 @@
         plotly
     </div>
     <div class="title col-3">
-        t3js
+        c3js
     </div>
     <div class="title col-3">
         charts.js
@@ -538,120 +49,156 @@
 <div id="hist-2" class="row">
     <div class="col-3" id="hist-d3js-2"></div>
     <div class="col-3" id="hist-plotly-2"></div>
-    <div class="col-3" id="hist-t3js-2"></div>
-    <div class="col-3" id="hist-chartjs-2"></div>
+    <div class="col-3" id="hist-c3js-2"></div>
+    <div class="col-3">
+        <canvas id="hist-chartjs-2"></canvas>
+    </div>
 </div>
 <div id="hist-3" class="row">
     <div class="col-3" id="hist-d3js-3"></div>
     <div class="col-3" id="hist-plotly-3"></div>
-    <div class="col-3" id="hist-t3js-3"></div>
-    <div class="col-3" id="hist-chartjs-3"></div>
+    <div class="col-3" id="hist-c3js-3"></div>
+    <div class="col-3">
+        <canvas id="hist-chartjs-3"></canvas>
+    </div>
 </div>
 <div id="hist-4" class="row">
     <div class="col-3" id="hist-d3js-4"></div>
     <div class="col-3" id="hist-plotly-4"></div>
-    <div class="col-3" id="hist-t3js-4"></div>
-    <div class="col-3" id="hist-chartjs-4"></div>
+    <div class="col-3" id="hist-c3js-4"></div>
+    <div class="col-3">
+        <canvas id="hist-chartjs-4"></canvas>
+    </div>
 </div>
 
 <div class="title">Scatter</div>
 <div id="scatter-2" class="row">
     <div class="col-3" id="scatter-d3js-2"></div>
     <div class="col-3" id="scatter-plotly-2"></div>
-    <div class="col-3" id="scatter-t3js-2"></div>
-    <div class="col-3" id="scatter-chartjs-2"></div>
+    <div class="col-3" id="scatter-c3js-2"></div>
+    <div class="col-3">
+        <canvas id="scatter-chartjs-2"></canvas>
+    </div>
 </div>
 <div id="scatter-3" class="row">
     <div class="col-3" id="scatter-d3js-3"></div>
     <div class="col-3" id="scatter-plotly-3"></div>
-    <div class="col-3" id="scatter-t3js-3"></div>
-    <div class="col-3" id="scatter-chartjs-3"></div>
+    <div class="col-3" id="scatter-c3js-3"></div>
+    <div class="col-3">
+        <canvas id="scatter-chartjs-3"></canvas>
+    </div>
 </div>
 <div id="scatter-4" class="row">
     <div class="col-3" id="scatter-d3js-4"></div>
     <div class="col-3" id="scatter-plotly-4"></div>
-    <div class="col-3" id="scatter-t3js-4"></div>
-    <div class="col-3" id="scatter-chartjs-4"></div>
+    <div class="col-3" id="scatter-c3js-4"></div>
+    <div class="col-3">
+        <canvas id="scatter-chartjs-4"></canvas>
+    </div>
 </div>
 
 <div class="title">Scatter with lines</div>
 <div id="scatter-wl-2" class="row">
     <div class="col-3" id="scatter-wl-d3js-2"></div>
     <div class="col-3" id="scatter-wl-plotly-2"></div>
-    <div class="col-3" id="scatter-wl-t3js-2"></div>
-    <div class="col-3" id="scatter-wl-chartjs-2"></div>
+    <div class="col-3" id="scatter-wl-c3js-2"></div>
+    <div class="col-3">
+        <canvas id="scatter-wl-chartjs-2"></canvas>
+    </div>
 </div>
 <div id="scatter-wl-3" class="row">
     <div class="col-3" id="scatter-wl-d3js-3"></div>
     <div class="col-3" id="scatter-wl-plotly-3"></div>
-    <div class="col-3" id="scatter-wl-t3js-3"></div>
-    <div class="col-3" id="scatter-wl-chartjs-3"></div>
+    <div class="col-3" id="scatter-wl-c3js-3"></div>
+    <div class="col-3">
+        <canvas id="scatter-wl-chartjs-3"></canvas>
+    </div>
 </div>
 <div id="scatter-wl-4" class="row">
     <div class="col-3" id="scatter-wl-d3js-4"></div>
     <div class="col-3" id="scatter-wl-plotly-4"></div>
-    <div class="col-3" id="scatter-wl-t3js-4"></div>
-    <div class="col-3" id="scatter-wl-chartjs-4"></div>
+    <div class="col-3" id="scatter-wl-c3js-4"></div>
+    <div class="col-3">
+        <canvas id="scatter-wl-chartjs-4"></canvas>
+    </div>
 </div>
 
 <div class="title">Boxplot</div>
 <div id="boxplot-2" class="row">
     <div class="col-3" id="boxplot-d3js-2"></div>
     <div class="col-3" id="boxplot-plotly-2"></div>
-    <div class="col-3" id="boxplot-t3js-2"></div>
-    <div class="col-3" id="boxplot-chartjs-2"></div>
+    <div class="col-3" id="boxplot-c3js-2"></div>
+    <div class="col-3">
+        <canvas id="boxplot-chartjs-2"></canvas>
+    </div>
 </div>
 <div id="boxplot-3" class="row">
     <div class="col-3" id="boxplot-d3js-3"></div>
     <div class="col-3" id="boxplot-plotly-3"></div>
-    <div class="col-3" id="boxplot-t3js-3"></div>
-    <div class="col-3" id="boxplot-chartjs-3"></div>
+    <div class="col-3" id="boxplot-c3js-3"></div>
+    <div class="col-3">
+        <canvas id="boxplot-chartjs-3"></canvas>
+    </div>
 </div>
 <div id="boxplot-4" class="row">
     <div class="col-3" id="boxplot-d3js-4"></div>
     <div class="col-3" id="boxplot-plotly-4"></div>
-    <div class="col-3" id="boxplot-t3js-4"></div>
-    <div class="col-3" id="boxplot-chartjs-4"></div>
+    <div class="col-3" id="boxplot-c3js-4"></div>
+    <div class="col-3">
+        <canvas id="boxplot-chartjs-4"></canvas>
+    </div>
 </div>
 
 <div class="title">Bar</div>
 <div id="bar-2" class="row">
     <div class="col-3" id="bar-d3js-2"></div>
     <div class="col-3" id="bar-plotly-2"></div>
-    <div class="col-3" id="bar-t3js-2"></div>
-    <div class="col-3" id="bar-chartjs-2"></div>
+    <div class="col-3" id="bar-c3js-2"></div>
+    <div class="col-3">
+        <canvas id="bar-chartjs-2"></canvas>
+    </div>
 </div>
 <div id="bar-3" class="row">
     <div class="col-3" id="bar-d3js-3"></div>
     <div class="col-3" id="bar-plotly-3"></div>
-    <div class="col-3" id="bar-t3js-3"></div>
-    <div class="col-3" id="bar-chartjs-3"></div>
+    <div class="col-3" id="bar-c3js-3"></div>
+    <div class="col-3">
+        <canvas id="bar-chartjs-3"></canvas>
+    </div>
 </div>
 <div id="bar-4" class="row">
     <div class="col-3" id="bar-d3js-4"></div>
     <div class="col-3" id="bar-plotly-4"></div>
-    <div class="col-3" id="bar-t3js-4"></div>
-    <div class="col-3" id="bar-chartjs-4"></div>
+    <div class="col-3" id="bar-c3js-4"></div>
+    <div class="col-3">
+        <canvas id="bar-chartjs-4"></canvas>
+    </div>
 </div>
 
 <div class="title">Parallel coordinates</div>
 <div id="parallel-2" class="row">
     <div class="col-3" id="parallel-d3js-2"></div>
     <div class="col-3" id="parallel-plotly-2"></div>
-    <div class="col-3" id="parallel-t3js-2"></div>
-    <div class="col-3" id="parallel-chartjs-2"></div>
+    <div class="col-3" id="parallel-c3js-2"></div>
+    <div class="col-3">
+        <canvas id="parallel-chartjs-2"></canvas>
+    </div>
 </div>
 <div id="parallel-3" class="row">
     <div class="col-3" id="parallel-d3js-3"></div>
     <div class="col-3" id="parallel-plotly-3"></div>
-    <div class="col-3" id="parallel-t3js-3"></div>
-    <div class="col-3" id="parallel-chartjs-3"></div>
+    <div class="col-3" id="parallel-c3js-3"></div>
+    <div class="col-3">
+        <canvas id="parallel-chartjs-3"></canvas>
+    </div>
 </div>
 <div id="parallel-4" class="row">
     <div class="col-3" id="parallel-d3js-4"></div>
     <div class="col-3" id="parallel-plotly-4"></div>
-    <div class="col-3" id="parallel-t3js-4"></div>
-    <div class="col-3" id="parallel-chartjs-4"></div>
+    <div class="col-3" id="parallel-c3js-4"></div>
+    <div class="col-3">
+        <canvas id="parallel-chartjs-4"></canvas>
+    </div>
 </div>
 </body>
 </html>
