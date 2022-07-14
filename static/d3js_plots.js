@@ -101,17 +101,59 @@ $(function () {
         }
 
         // boxplot
+        {
+            let data = get_data('boxplot', 100);
+            begin = Date.now();
+            // draw_d3_boxplot('#boxplot-d3js-2', data, {
+            //     title: 'D3js scatter with lines for 100 values',
+            //     xaxis: 'axis x',
+            //     yaxis: 'axis y'
+            // })
+            end = Date.now();
+            $('#boxplot-d3js-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+        }
 
         // bar
 
         // parallel
+        {
+            let data = get_data('parallel', 10);
+            begin = Date.now();
+            draw_d3_parallel('#parallel-d3js-2', data, {
+                title: 'D3js parallel for 10 values',
+                one_axis: 'first axis',
+                two_axis: 'second axis'
+            });
+            end = Date.now();
+            $('#parallel-d3js-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+
+            data = get_data('parallel', 50);
+            begin = Date.now();
+            draw_d3_parallel('#parallel-d3js-3', data, {
+                title: 'D3js parallel for 50 values',
+                one_axis: 'first axis',
+                two_axis: 'second axis'
+            });
+            end = Date.now();
+            $('#parallel-d3js-3').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+
+            data = get_data('parallel', 100);
+            begin = Date.now();
+            draw_d3_parallel('#parallel-d3js-4', data, {
+                title: 'D3js parallel for 100 values',
+                one_axis: 'first axis',
+                two_axis: 'second axis'
+            });
+            end = Date.now();
+            $('#parallel-d3js-4').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+        }
     }
 )
 
 function draw_d3_hist(id, data, layout) {
     const margin = {top: 20, right: 30, bottom: 40, left: 60};
-    const width = 460 - margin.left - margin.right;
-    const height = 500 - margin.top - margin.bottom;
+    const width = 1700 - margin.left - margin.right;
+    const height = 700 - margin.top - margin.bottom;
 
     const svg = d3.select(id)
         .append("svg")
@@ -305,8 +347,8 @@ function draw_d3_scatter(id, data, layout) {
     }
 
     let margin = {top: 20, right: 30, bottom: 40, left: 60};
-    let width = 460 - margin.left - margin.right;
-    let height = 500 - margin.top - margin.bottom;
+    let width = 1700 - margin.left - margin.right;
+    let height = 700 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     const svg = d3.select(id)
@@ -398,8 +440,8 @@ function draw_d3_scatter_with_lines(id, data, layout) {
     }
 
     let margin = {top: 20, right: 30, bottom: 40, left: 60};
-    let width = 460 - margin.left - margin.right;
-    let height = 500 - margin.top - margin.bottom;
+    let width = 1700 - margin.left - margin.right;
+    let height = 700 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     const svg = d3.select(id)
@@ -502,7 +544,121 @@ function draw_d3_scatter_with_lines(id, data, layout) {
 }
 
 function draw_d3_boxplot(id, data, layout) {
+    const margin = {top: 10, right: 30, bottom: 30, left: 40};
+    const width = 1700 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
 
+// append the svg object to the body of the page
+    let svg = d3.select(id)
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+// Read the data and compute summary statistics for each specie
+    d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/iris.csv", function (data) {
+
+        // Compute quartiles, median, inter quantile range min and max --> these info are then used to draw the box.
+        let sumstat = d3.rollup() // group function allows to group the calculation per level of a factor
+            .key(function (d) {
+                return d.Species;
+            })
+            .rollup(function (d) {
+                let q1 = d3.quantile(d.map(function (g) {
+                    return g.Sepal_Length;
+                }).sort(d3.ascending), .25)
+                let median = d3.quantile(d.map(function (g) {
+                    return g.Sepal_Length;
+                }).sort(d3.ascending), .5)
+                let q3 = d3.quantile(d.map(function (g) {
+                    return g.Sepal_Length;
+                }).sort(d3.ascending), .75)
+                let interQuantileRange = q3 - q1
+                let min = q1 - 1.5 * interQuantileRange
+                let max = q3 + 1.5 * interQuantileRange
+                return ({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
+            })
+            .entries(data)
+
+        // Show the X scale
+        let x = d3.scaleBand()
+            .range([0, width])
+            .domain(["setosa", "versicolor", "virginica"])
+            .paddingInner(1)
+            .paddingOuter(.5)
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+
+        // Show the Y scale
+        let y = d3.scaleLinear()
+            .domain([3, 9])
+            .range([height, 0])
+        svg.append("g").call(d3.axisLeft(y))
+
+        // Show the main vertical line
+        svg
+            .selectAll("vertLines")
+            .data(sumstat)
+            .enter()
+            .append("line")
+            .attr("x1", function (d) {
+                return (x(d.key))
+            })
+            .attr("x2", function (d) {
+                return (x(d.key))
+            })
+            .attr("y1", function (d) {
+                return (y(d.value.min))
+            })
+            .attr("y2", function (d) {
+                return (y(d.value.max))
+            })
+            .attr("stroke", "black")
+            .style("width", 40)
+
+        // rectangle for the main box
+        let boxWidth = 100;
+
+        svg.selectAll("boxes")
+            .data(sumstat)
+            .enter()
+            .append("rect")
+            .attr("x", function (d) {
+                return (x(d.key) - boxWidth / 2)
+            })
+            .attr("y", function (d) {
+                return (y(d.value.q3))
+            })
+            .attr("height", function (d) {
+                return (y(d.value.q1) - y(d.value.q3))
+            })
+            .attr("width", boxWidth)
+            .attr("stroke", "black")
+            .style("fill", "#69b3a2")
+
+        // Show the median
+        svg.selectAll("medianLines")
+            .data(sumstat)
+            .enter()
+            .append("line")
+            .attr("x1", function (d) {
+                return (x(d.key) - boxWidth / 2)
+            })
+            .attr("x2", function (d) {
+                return (x(d.key) + boxWidth / 2)
+            })
+            .attr("y1", function (d) {
+                return (y(d.value.median))
+            })
+            .attr("y2", function (d) {
+                return (y(d.value.median))
+            })
+            .attr("stroke", "black")
+            .style("width", 80)
+    })
 }
 
 function draw_d3_bar(id, data, layout) {
@@ -510,5 +666,102 @@ function draw_d3_bar(id, data, layout) {
 }
 
 function draw_d3_parallel(id, data, layout) {
+    const margin = {top: 30, right: 50, bottom: 10, left: 50};
+    const width = 1700 - margin.left - margin.right;
+    const height = 700 - margin.top - margin.bottom;
 
+    // append the svg object to the body of the page
+    const svg = d3.select(id)
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Color scale: give me a specie name, I return a color
+    const color = d3.scaleOrdinal()
+        .domain(["setosa"])
+        .range(["#334de8"])
+
+    // Here I set the list of dimension manually to control the order of axis:
+    let dimensions = [layout.one_axis, layout.two_axis];
+
+    data = {
+        [layout.one_axis]: data['x1'],
+        [layout.two_axis]: data['x2']
+    };
+
+    let data_format = [];
+    for (let i in data[layout.one_axis]) {
+        data_format.push({[layout.one_axis]: data[layout.one_axis][i], [layout.two_axis]: data[layout.two_axis][i]});
+    }
+
+    // For each dimension, I build a linear scale. I store all in a y object
+    const y = {}
+    for (let i in dimensions) {
+        let name = dimensions[i]
+        y[name] = d3.scaleLinear()
+            .domain([d3.min(data[name], function (d) {
+                return +d
+            }), d3.max(data[name], function (d) {
+                return +d
+            })]) // --> Same axis range for each group
+            // --> different axis range for each group --> .domain( [d3.extent(data, function(d) { return +d[name]; })] )
+            .range([height, 0])
+    }
+
+    // Build the X scale -> it find the best position for each Y axis
+    let x = d3.scalePoint()
+        .range([0, width])
+        .domain(dimensions);
+
+    svg.append("text")
+        .attr("text-anchor", "end")
+        .attr("x", width / 2)
+        .text(layout.title);
+
+    // The path function take a row of the csv as input, and return x and y coordinates of the line to draw for this raw.
+    function path(d) {
+        return d3.line()(dimensions.map(function (p) {
+            return [x(p), y[p](d[p])];
+        }));
+    }
+
+    // Draw the lines
+    svg.selectAll("myPath")
+        .data(data_format)
+        .join("path")
+        .attr("class", function (d) {
+            return "line setosa"
+        }) // 2 class for each line: 'line' and the group name
+        .attr("d", path)
+        .style("fill", "none")
+        .style("stroke", function (d) {
+            return (color('setosa'))
+        })
+        .style("opacity", 0.5)
+
+    // Draw the axis:
+    svg.selectAll("myAxis")
+        // For each dimension of the dataset I add a 'g' element:
+        .data(dimensions)
+        .enter()
+        .append("g")
+        .attr("class", "axis")
+        // I translate this element to its right position on the x axis
+        .attr("transform", function (d) {
+            return `translate(${x(d)})`
+        })
+        // And I build the axis with the call function
+        .each(function (d) {
+            d3.select(this).call(d3.axisLeft().ticks(5).scale(y[d]));
+        })
+        // Add axis title
+        .append("text")
+        .style("text-anchor", "middle")
+        .attr("y", -9)
+        .text(function (d) {
+            return d;
+        })
+        .style("fill", "black")
 }

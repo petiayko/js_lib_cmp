@@ -224,7 +224,7 @@ $(function () {
                         },
                         title: {
                             display: true,
-                            text: 'Chart.js scatter for 100 dots'
+                            text: 'Chart.js scatter with lines for 100 dots'
                         },
                         zoom: {
                             zoom: {
@@ -285,7 +285,7 @@ $(function () {
                         },
                         title: {
                             display: true,
-                            text: 'Chart.js scatter for 1000 dots'
+                            text: 'Chart.js scatter with lines for 1000 dots'
                         },
                         zoom: {
                             zoom: {
@@ -315,7 +315,10 @@ $(function () {
                 data: {
                     datasets: [{
                         data: data_format,
-                        backgroundColor: 'rgb(51,77,232)'
+                        backgroundColor: 'rgb(51,77,232)',
+                        showLine: true,
+                        borderColor: '#1c2b83',
+                        borderWidth: 1,
                     }]
                 },
                 options: {
@@ -343,7 +346,7 @@ $(function () {
                         },
                         title: {
                             display: true,
-                            text: 'Chart.js scatter for 10000 dots'
+                            text: 'Chart.js scatter with lines for 10000 dots'
                         },
                         zoom: {
                             zoom: {
