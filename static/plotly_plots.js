@@ -449,6 +449,7 @@ $(function () {
                     autosize: true,
                 };
                 let data = get_data('boxplot', 100);
+                console.log(data);
                 let plot = [];
                 for (let i in data) {
                     plot.push({

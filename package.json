@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "@sgratzl/chartjs-chart-boxplot": "^3.8.0",
-    "chart.js": "^3.8.0",
-    "chartjs-chart-error-bars": "^3.8.0"
-  }
-}

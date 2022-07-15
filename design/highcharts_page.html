@@ -2,9 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Highchart page</title>
+    <style>
+        .title {
+            text-align: center;
+            font-weight: bold;
+            font-size: larger;
+        }
+
+        .hcplot {
+            height: 700px;
+        }
+    </style>
+    <script src="../static/libs/jquery.min.js"></script>
+    <script src="../static/libs/highcharts/highcharts.js"></script>
+    <script src="../static/libs/highcharts/histogram-bellcurve.js"></script>
+    <script src="../static/libs/highcharts/highcharts-more.js"></script>
+    <script src="../static/libs/highcharts/parallel-coordinates.js"></script>
+    <script src="../static/libs/highcharts/accessibility.js"></script>
+
+    <script src="../static/common.js"></script>
+    <script src="../static/highcharts_plots.js" type="module"></script>
 </head>
 <body>
+<div class="title">Histogram</div>
+<div id="hist-highcharts-2" class="hcplot"></div>
+<div id="hist-highcharts-3" class="hcplot"></div>
+<div id="hist-highcharts-4" class="hcplot"></div>
 
+<div class="title">Scatter</div>
+<div id="scatter-highcharts-2" class="hcplot"></div>
+<div id="scatter-highcharts-3" class="hcplot"></div>
+<div id="scatter-highcharts-4" class="hcplot"></div>
+
+<div class="title">Scatter with lines</div>
+<div id="scatter-wl-highcharts-2" class="hcplot"></div>
+<div id="scatter-wl-highcharts-3" class="hcplot"></div>
+<div id="scatter-wl-highcharts-4" class="hcplot"></div>
+
+<div class="title">Boxplot</div>
+<div id="boxplot-highcharts-2" class="hcplot"></div>
+<div id="boxplot-highcharts-3" class="hcplot"></div>
+<div id="boxplot-highcharts-4" class="hcplot"></div>
+
+<div class="title">Bar</div>
+<div id="bar-highcharts-2" class="hcplot"></div>
+<div id="bar-highcharts-3" class="hcplot"></div>
+<div id="bar-highcharts-4" class="hcplot"></div>
+
+<div class="title">Parallel coordinates</div>
+<div id="parallel-highcharts-2" class="hcplot"></div>
+<div id="parallel-highcharts-3" class="hcplot"></div>
+<div id="parallel-highcharts-4" class="hcplot"></div>
 </body>
 </html>

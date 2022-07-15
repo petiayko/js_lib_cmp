@@ -2,9 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Taucharts page</title>
+    <style>
+        .title {
+            text-align: center;
+            font-weight: bold;
+            font-size: larger;
+        }
+        .tauplot {
+            height: 700px;
+        }
+    </style>
+    <script src="../static/libs/jquery.min.js"></script>
+    <script src="../static/libs/d3/d3_v5-16.min.js"></script>
+    <script src="../static/libs/taucharts/taucharts.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/libs/taucharts/taucharts.min.css">
+
+    <script src="../static/common.js"></script>
+    <script src="../static/taucharts_plot.js" type="module"></script>
 </head>
 <body>
+<div class="title">Histogram</div>
+<div id="hist-taucharts-2" class="tauplot"></div>
+<div id="hist-taucharts-3" class="tauplot"></div>
+<div id="hist-taucharts-4" class="tauplot"></div>
 
+<div class="title">Scatter</div>
+<div id="scatter-taucharts-2" class="tauplot"></div>
+<div id="scatter-taucharts-3" class="tauplot"></div>
+<div id="scatter-taucharts-4" class="tauplot"></div>
+
+<div class="title">Scatter with lines</div>
+<div id="scatter-wl-taucharts-2" class="tauplot"></div>
+<div id="scatter-wl-taucharts-3" class="tauplot"></div>
+<div id="scatter-wl-taucharts-4" class="tauplot"></div>
+
+<div class="title">Boxplot</div>
+<div id="boxplot-taucharts-2" class="tauplot"></div>
+<div id="boxplot-taucharts-3" class="tauplot"></div>
+<div id="boxplot-taucharts-4" class="tauplot"></div>
+
+<div class="title">Bar</div>
+<div id="bar-taucharts-2" class="tauplot"></div>
+<div id="bar-taucharts-3" class="tauplot"></div>
+<div id="bar-taucharts-4" class="tauplot"></div>
+
+<div class="title">Parallel coordinates</div>
+<div id="parallel-taucharts-2" class="tauplot"></div>
+<div id="parallel-taucharts-3" class="tauplot"></div>
+<div id="parallel-taucharts-4" class="tauplot"></div>
 </body>
 </html>
