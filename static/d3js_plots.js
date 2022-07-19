@@ -104,13 +104,27 @@ $(function () {
         {
             let data = get_data('boxplot', 100);
             begin = Date.now();
-            // draw_d3_boxplot('#boxplot-d3js-2', data, {
-            //     title: 'D3js scatter with lines for 100 values',
-            //     xaxis: 'axis x',
-            //     yaxis: 'axis y'
-            // })
+            draw_d3_boxplot('#boxplot-d3js-2', data, {
+                title: 'D3js boxplot for 100 values'
+            })
             end = Date.now();
             $('#boxplot-d3js-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+
+            data = get_data('boxplot', 1000);
+            begin = Date.now();
+            draw_d3_boxplot('#boxplot-d3js-3', data, {
+                title: 'D3js boxplot for 1000 values'
+            })
+            end = Date.now();
+            $('#boxplot-d3js-3').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+
+            data = get_data('boxplot', 10000);
+            begin = Date.now();
+            draw_d3_boxplot('#boxplot-d3js-4', data, {
+                title: 'D3js boxplot for 10000 values'
+            })
+            end = Date.now();
+            $('#boxplot-d3js-4').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
         }
 
         // bar
@@ -483,6 +497,9 @@ function draw_d3_scatter(id, data, layout) {
         .attr("r", 5)
         .style("fill", "#334de8")
         .style("opacity", 0.5)
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
 
     // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
     let zoom = d3.zoom()
@@ -518,11 +535,6 @@ function draw_d3_scatter(id, data, layout) {
                 return newY(d[1])
             });
     }
-
-    svg
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave);
 
     // grid
     d3.selectAll("g.yAxis g.tick")
@@ -610,22 +622,6 @@ function draw_d3_scatter_with_lines(id, data, layout) {
             return y(d[1])
         });
 
-    svg.append('path')
-        .datum(data_format)
-        .attr("class", "myArea")
-        .attr("fill", "none")
-        .attr("stroke", "steelblue")
-        .attr("stroke-linejoin", "round")
-        .attr("stroke-linecap", "round")
-        .attr("stroke-width", 1.5)
-        .attr("d", line)
-        .attr("cx", function (d) {
-            return x(d[0]);
-        })
-        .attr("cy", function (d) {
-            return y(d[1]);
-        });
-
     const tooltip = d3.select(id)
         .append("div")
         .style("opacity", 0)
@@ -684,86 +680,90 @@ function draw_d3_scatter_with_lines(id, data, layout) {
         .attr("r", 5)
         .style("fill", "#334de8")
         .style("opacity", 0.5)
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
 
-    // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
-    let zoom = d3.zoom()
-        .scaleExtent([.5, 20])  // This control how much you can unzoom (x0.5) and zoom (x20)
-        .extent([[0, 0], [width, height]])
-        .on("zoom", updateChart);
+    scatter
+        .append('path')
+        .datum(data_format)
+        .attr("class", "myArea")
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("stroke-width", 1.5)
+        .attr("d", line)
+        .attr("cx", function (d) {
+            return x(d[0]);
+        })
+        .attr("cy", function (d) {
+            return y(d[1]);
+        });
 
-    // This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
-    svg.append("rect")
-        .attr("width", width)
-        .attr("height", height)
-        .style("fill", "none")
-        .style("pointer-events", "all")
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-        .call(zoom);
-    // now the user can zoom and it will trigger the function called updateChart
-
-    // A function that updates the chart when the user zoom and thus new boundaries are available
-    function updateChart(event, d) {
-        // recover the new scale
-        let newX = event.transform.rescaleX(x);
-        let newY = event.transform.rescaleY(y);
-        // update axes with these new boundaries
-        xAxis.call(d3.axisBottom(newX));
-        yAxis.call(d3.axisLeft(newY));
-        // update circle position
-        scatter
-            .selectAll("circle")
-            .attr('cx', function (d) {
-                return newX(d[0])
-            })
-            .attr('cy', function (d) {
-                return newY(d[1])
-            });
+    // // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
+    // let zoom = d3.zoom()
+    //     .scaleExtent([.5, 20])  // This control how much you can unzoom (x0.5) and zoom (x20)
+    //     .extent([[0, 0], [width, height]])
+    //     .on("zoom", updateChart);
     //
-    //         let line = d3.line()
-    //     .x(function (d) {
-    //         return x(d[0])
-    //     })
-    //     .y(function (d) {
-    //         return y(d[1])
-    //     });
+    // // This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
+    // svg.append("rect")
+    //     .attr("width", width)
+    //     .attr("height", height)
+    //     .style("fill", "none")
+    //     .style("pointer-events", "all")
+    //     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+    //     .call(zoom);
+    // // now the user can zoom and it will trigger the function called updateChart
     //
-    // svg.append('path')
-    //     .datum(data_format)
-    //     .attr("class", "myArea")
-    //     .attr("fill", "none")
-    //     .attr("stroke", "steelblue")
-    //     .attr("stroke-linejoin", "round")
-    //     .attr("stroke-linecap", "round")
-    //     .attr("stroke-width", 1.5)
-    //     .attr("d", line);
-
-        scatter
-            .selectAll("path")
-            .attr('cx', function (d) {
-                return newX(d[0])
-            })
-            .attr('cy', function (d) {
-                return newY(d[1])
-            });
-    }
-
-    // // Add the points
-    // svg.append("g")
-    //     .selectAll("dot")
-    //     .data(data_format)
-    //     .enter()
-    //     .append("circle")
-    //     .attr("cx", function (d) {
-    //         return x(d[0]);
-    //     })
-    //     .attr("cy", function (d) {
-    //         return y(d[1]);
-    //     })
-    //     .attr("r", 5)
-    //     .attr("fill", "#334de8")
-    //     .on("mouseover", mouseover)
-    //     .on("mousemove", mousemove)
-    //     .on("mouseleave", mouseleave);
+    // // A function that updates the chart when the user zoom and thus new boundaries are available
+    // function updateChart(event, d) {
+    //     // recover the new scale
+    //     let newX = event.transform.rescaleX(x);
+    //     let newY = event.transform.rescaleY(y);
+    //     // update axes with these new boundaries
+    //     xAxis.call(d3.axisBottom(newX));
+    //     yAxis.call(d3.axisLeft(newY));
+    //     // update circle position
+    //     scatter
+    //         .selectAll("circle")
+    //         .attr('cx', function (d) {
+    //             return newX(d[0])
+    //         })
+    //         .attr('cy', function (d) {
+    //             return newY(d[1])
+    //         });
+    //     //
+    //     //         let line = d3.line()
+    //     //     .x(function (d) {
+    //     //         return x(d[0])
+    //     //     })
+    //     //     .y(function (d) {
+    //     //         return y(d[1])
+    //     //     });
+    //     //
+    //     // svg.append('path')
+    //     //     .datum(data_format)
+    //     //     .attr("class", "myArea")
+    //     //     .attr("fill", "none")
+    //     //     .attr("stroke", "steelblue")
+    //     //     .attr("stroke-linejoin", "round")
+    //     //     .attr("stroke-linecap", "round")
+    //     //     .attr("stroke-width", 1.5)
+    //     //     .attr("d", line);
+    //
+    //     // svg
+    //     scatter
+    //         .selectAll("path.myArea")
+    //         .attr('cx', function (d) {
+    //             // console.log(this);
+    //             return newX(d[0])
+    //         })
+    //         .attr('cy', function (d) {
+    //             return newY(d[1])
+    //         });
+    // }
 
     // grid
     d3.selectAll("g.yAxis g.tick")
@@ -792,108 +792,168 @@ function draw_d3_boxplot(id, data, layout) {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-// Read the data and compute summary statistics for each specie
-    d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/iris.csv", function (data) {
+    let keys = [];
+    let max_v = -Infinity;
+    let min_v = Infinity;
+    let sumstat = [];
+    for (let i in data) {
+        let q1 = d3.quantile(d3.sort(data[i]), 0.25);
+        let q3 = d3.quantile(d3.sort(data[i]), 0.75);
+        let median = d3.quantile(d3.sort(data[i]), 0.50);
+        let interQuantileRange = q3 - q1;
+        let min = q1 - 1.5 * interQuantileRange;
+        let max = q3 + 1.5 * interQuantileRange;
+        if (min < min_v) {
+            min_v = min;
+        }
+        if (max > max_v) {
+            max_v = max;
+        }
+        sumstat.push({
+            'key': i,
+            'value': {
+                'q1': q1,
+                'median': median,
+                'q3': q3,
+                'interQuantileRange': interQuantileRange,
+                'min': q1 - 1.5 * interQuantileRange,
+                'max': q3 + 1.5 * interQuantileRange
+            }
+        });
+        keys.push(Number(i));
+    }
 
-        // Compute quartiles, median, inter quantile range min and max --> these info are then used to draw the box.
-        let sumstat = d3.rollup() // group function allows to group the calculation per level of a factor
-            .key(function (d) {
-                return d.Species;
-            })
-            .rollup(function (d) {
-                let q1 = d3.quantile(d.map(function (g) {
-                    return g.Sepal_Length;
-                }).sort(d3.ascending), .25)
-                let median = d3.quantile(d.map(function (g) {
-                    return g.Sepal_Length;
-                }).sort(d3.ascending), .5)
-                let q3 = d3.quantile(d.map(function (g) {
-                    return g.Sepal_Length;
-                }).sort(d3.ascending), .75)
-                let interQuantileRange = q3 - q1
-                let min = q1 - 1.5 * interQuantileRange
-                let max = q3 + 1.5 * interQuantileRange
-                return ({q1: q1, median: median, q3: q3, interQuantileRange: interQuantileRange, min: min, max: max})
-            })
-            .entries(data)
+    console.table(sumstat);
 
-        // Show the X scale
-        let x = d3.scaleBand()
-            .range([0, width])
-            .domain(["setosa", "versicolor", "virginica"])
-            .paddingInner(1)
-            .paddingOuter(.5)
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x))
+    // Show the X scale
+    let x = d3.scaleLinear()
+        .range([0, width])
+        .domain([d3.min(keys, function (d) {
+            return +d
+        }) * 0.25, d3.max(keys, function (d) {
+            return +d
+        }) * 1.25])
 
-        // Show the Y scale
-        let y = d3.scaleLinear()
-            .domain([3, 9])
-            .range([height, 0])
-        svg.append("g").call(d3.axisLeft(y))
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
 
-        // Show the main vertical line
-        svg
-            .selectAll("vertLines")
-            .data(sumstat)
-            .enter()
-            .append("line")
-            .attr("x1", function (d) {
-                return (x(d.key))
-            })
-            .attr("x2", function (d) {
-                return (x(d.key))
-            })
-            .attr("y1", function (d) {
-                return (y(d.value.min))
-            })
-            .attr("y2", function (d) {
-                return (y(d.value.max))
-            })
-            .attr("stroke", "black")
-            .style("width", 40)
+    // Show the Y scale
+    let y = d3.scaleLinear()
+        .domain([min_v, max_v])
+        .range([height, 0]);
+    svg.append("g").call(d3.axisLeft(y));
 
-        // rectangle for the main box
-        let boxWidth = 100;
+    const tooltip = d3.select(id)
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "5px")
+        .style("padding", "10px")
 
-        svg.selectAll("boxes")
-            .data(sumstat)
-            .enter()
-            .append("rect")
-            .attr("x", function (d) {
-                return (x(d.key) - boxWidth / 2)
-            })
-            .attr("y", function (d) {
-                return (y(d.value.q3))
-            })
-            .attr("height", function (d) {
-                return (y(d.value.q1) - y(d.value.q3))
-            })
-            .attr("width", boxWidth)
-            .attr("stroke", "black")
-            .style("fill", "#69b3a2")
+    // hist title
+    svg.append("text")
+        .attr("text-anchor", "end")
+        .attr("x", width / 2)
+        .text(layout.title);
 
-        // Show the median
-        svg.selectAll("medianLines")
-            .data(sumstat)
-            .enter()
-            .append("line")
-            .attr("x1", function (d) {
-                return (x(d.key) - boxWidth / 2)
-            })
-            .attr("x2", function (d) {
-                return (x(d.key) + boxWidth / 2)
-            })
-            .attr("y1", function (d) {
-                return (y(d.value.median))
-            })
-            .attr("y2", function (d) {
-                return (y(d.value.median))
-            })
-            .attr("stroke", "black")
-            .style("width", 80)
-    })
+
+    // A function that change this tooltip when the user hover a point.
+    // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
+    const mouseover = function (event, d) {
+        tooltip
+            .style("opacity", 1)
+    }
+
+    const mousemove = function (event, d) {
+        tooltip
+            .html('Value ' + d.key +
+                '<br>q1=' + d.value.q1 +
+                '<br>q3=' + d.value.q3 +
+                '<br>min=' + d.value.min +
+                '<br>max=' + d.value.max +
+                '<br>median=' + d.value.median +
+                '<br>interQuantileRange=' + d.value.interQuantileRange
+            )
+            .style("left", (event.x) / 2 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+            .style("top", (event.y) / 2 + "px")
+    }
+
+    // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+    const mouseleave = function (event, d) {
+        tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0)
+    }
+
+    // Show the main vertical line
+    svg
+        .selectAll("vertLines")
+        .data(sumstat)
+        .enter()
+        .append("line")
+        .attr("x1", function (d) {
+            return (x(d.key))
+        })
+        .attr("x2", function (d) {
+            return (x(d.key))
+        })
+        .attr("y1", function (d) {
+            return (y(d.value.min))
+        })
+        .attr("y2", function (d) {
+            return (y(d.value.max))
+        })
+        .attr("stroke", "black")
+        .style("width", 40);
+
+    // rectangle for the main box
+    let boxWidth = 75;
+    svg
+        .selectAll("boxes")
+        .data(sumstat)
+        .enter()
+        .append("rect")
+        .attr("x", function (d) {
+            return (x(d.key) - boxWidth / 2)
+        })
+        .attr("y", function (d) {
+            return (y(d.value.q3))
+        })
+        .attr("height", function (d) {
+            return (y(d.value.q1) - y(d.value.q3))
+        })
+        .attr("width", boxWidth)
+        .attr("stroke", "black")
+        .style("fill", "#334de8")
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
+
+    // Show the median
+    svg
+        .selectAll("medianLines")
+        .data(sumstat)
+        .enter()
+        .append("line")
+        .attr("x1", function (d) {
+            return (x(d.key) - boxWidth / 2)
+        })
+        .attr("x2", function (d) {
+            return (x(d.key) + boxWidth / 2)
+        })
+        .attr("y1", function (d) {
+            return (y(d.value.median))
+        })
+        .attr("y2", function (d) {
+            return (y(d.value.median))
+        })
+        .attr("stroke", "black")
+        .style("width", 80);
 }
 
 function draw_d3_bar(id, data, layout) {
@@ -962,6 +1022,60 @@ function draw_d3_parallel(id, data, layout) {
         }));
     }
 
+    // const highlight = function (event, d) {
+    //     console.log(d)
+    //     // // first every group turns grey
+    //     // d3.selectAll(".line")
+    //     //     .transition().duration(200)
+    //     //     .style("stroke", "lightgrey")
+    //     //     .style("opacity", "0.2")
+    //     // // Second the hovered specie takes its color
+    //     // d3.selectAll(".setosa")
+    //     //     .transition().duration(200)
+    //     //     .style("stroke", color('setosa'))
+    //     //     .style("opacity", "1")
+    // }
+    //
+    // // Unhighlight
+    // const doNotHighlight = function (event, d) {
+    //     // d3.selectAll(".line")
+    //     //     .transition().duration(200).delay(1000)
+    //     //     .style("stroke", 'setosa')
+    //     //     .style("opacity", "1")
+    // }
+
+    const tooltip = d3.select(id)
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "5px")
+        .style("padding", "10px")
+
+    // A function that change this tooltip when the user hover a point.
+    // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
+    const mouseover = function (event, d) {
+        tooltip
+            .style("opacity", 1)
+    }
+
+    const mousemove = function (event, d) {
+        tooltip
+            .html(d['first axis'] + ' ' + d['second axis'])
+            .style("left", (event.x) / 2 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+            .style("top", (event.y) / 2 + "px")
+    }
+
+    // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+    const mouseleave = function (event, d) {
+        tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0)
+    }
+
     // Draw the lines
     svg.selectAll("myPath")
         .data(data_format)
@@ -975,6 +1089,9 @@ function draw_d3_parallel(id, data, layout) {
             return (color('setosa'))
         })
         .style("opacity", 0.5)
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave)
 
     // Draw the axis:
     svg.selectAll("myAxis")
