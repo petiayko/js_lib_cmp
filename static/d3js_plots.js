@@ -701,70 +701,6 @@ function draw_d3_scatter_with_lines(id, data, layout) {
             return y(d[1]);
         });
 
-    // // Set the zoom and Pan features: how much you can zoom, on which part, and what to do when there is a zoom
-    // let zoom = d3.zoom()
-    //     .scaleExtent([.5, 20])  // This control how much you can unzoom (x0.5) and zoom (x20)
-    //     .extent([[0, 0], [width, height]])
-    //     .on("zoom", updateChart);
-    //
-    // // This add an invisible rect on top of the chart area. This rect can recover pointer events: necessary to understand when the user zoom
-    // svg.append("rect")
-    //     .attr("width", width)
-    //     .attr("height", height)
-    //     .style("fill", "none")
-    //     .style("pointer-events", "all")
-    //     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-    //     .call(zoom);
-    // // now the user can zoom and it will trigger the function called updateChart
-    //
-    // // A function that updates the chart when the user zoom and thus new boundaries are available
-    // function updateChart(event, d) {
-    //     // recover the new scale
-    //     let newX = event.transform.rescaleX(x);
-    //     let newY = event.transform.rescaleY(y);
-    //     // update axes with these new boundaries
-    //     xAxis.call(d3.axisBottom(newX));
-    //     yAxis.call(d3.axisLeft(newY));
-    //     // update circle position
-    //     scatter
-    //         .selectAll("circle")
-    //         .attr('cx', function (d) {
-    //             return newX(d[0])
-    //         })
-    //         .attr('cy', function (d) {
-    //             return newY(d[1])
-    //         });
-    //     //
-    //     //         let line = d3.line()
-    //     //     .x(function (d) {
-    //     //         return x(d[0])
-    //     //     })
-    //     //     .y(function (d) {
-    //     //         return y(d[1])
-    //     //     });
-    //     //
-    //     // svg.append('path')
-    //     //     .datum(data_format)
-    //     //     .attr("class", "myArea")
-    //     //     .attr("fill", "none")
-    //     //     .attr("stroke", "steelblue")
-    //     //     .attr("stroke-linejoin", "round")
-    //     //     .attr("stroke-linecap", "round")
-    //     //     .attr("stroke-width", 1.5)
-    //     //     .attr("d", line);
-    //
-    //     // svg
-    //     scatter
-    //         .selectAll("path.myArea")
-    //         .attr('cx', function (d) {
-    //             // console.log(this);
-    //             return newX(d[0])
-    //         })
-    //         .attr('cy', function (d) {
-    //             return newY(d[1])
-    //         });
-    // }
-
     // grid
     d3.selectAll("g.yAxis g.tick")
         .append("line")
@@ -822,8 +758,6 @@ function draw_d3_boxplot(id, data, layout) {
         });
         keys.push(Number(i));
     }
-
-    console.table(sumstat);
 
     // Show the X scale
     let x = d3.scaleLinear()
@@ -1021,28 +955,6 @@ function draw_d3_parallel(id, data, layout) {
             return [x(p), y[p](d[p])];
         }));
     }
-
-    // const highlight = function (event, d) {
-    //     console.log(d)
-    //     // // first every group turns grey
-    //     // d3.selectAll(".line")
-    //     //     .transition().duration(200)
-    //     //     .style("stroke", "lightgrey")
-    //     //     .style("opacity", "0.2")
-    //     // // Second the hovered specie takes its color
-    //     // d3.selectAll(".setosa")
-    //     //     .transition().duration(200)
-    //     //     .style("stroke", color('setosa'))
-    //     //     .style("opacity", "1")
-    // }
-    //
-    // // Unhighlight
-    // const doNotHighlight = function (event, d) {
-    //     // d3.selectAll(".line")
-    //     //     .transition().duration(200).delay(1000)
-    //     //     .style("stroke", 'setosa')
-    //     //     .style("opacity", "1")
-    // }
 
     const tooltip = d3.select(id)
         .append("div")

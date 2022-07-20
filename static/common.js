@@ -46,6 +46,15 @@ function get_data(type, size) {
             }
             return output;
 
+        case 'error_bar':
+            output = {};
+            for (let i = 0; i < size; i++) {
+                max = Math.floor(Math.random() * 100);
+                min = max - Math.floor(Math.random() * 10);
+                output[Math.random() * (2 - 0.1) + 0.1] = [Math.random() * (max - min) + min, min, max];
+            }
+            return output;
+
         default:
             return [];
     }

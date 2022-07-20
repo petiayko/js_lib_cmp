@@ -428,7 +428,7 @@ $(function () {
         {
             {
                 let layout = {
-                    title: 'Plotly bar for 100 values',
+                    title: 'Plotly bar for 10 values',
                     height: 700,
                     xaxis: {
                         title: {
@@ -448,8 +448,7 @@ $(function () {
                     },
                     autosize: true,
                 };
-                let data = get_data('boxplot', 100);
-                console.log(data);
+                let data = get_data('error_bar', 10);
                 let plot = [];
                 for (let i in data) {
                     plot.push({
@@ -475,7 +474,7 @@ $(function () {
 
             {
                 let layout = {
-                    title: 'Plotly bar for 1000 values',
+                    title: 'Plotly bar for 20 values',
                     height: 700,
                     xaxis: {
                         title: {
@@ -495,7 +494,7 @@ $(function () {
                     },
                     autosize: true,
                 };
-                let data = get_data('boxplot', 1000);
+                let data = get_data('error_bar', 20);
                 let plot = [];
                 for (let i in data) {
                     plot.push({
@@ -521,7 +520,7 @@ $(function () {
 
             {
                 let layout = {
-                    title: 'Plotly bar for 10000 values',
+                    title: 'Plotly bar for 50 values',
                     height: 700,
                     xaxis: {
                         title: {
@@ -541,7 +540,7 @@ $(function () {
                     },
                     autosize: true,
                 };
-                let data = get_data('boxplot', 10000);
+                let data = get_data('error_bar', 50);
                 let plot = [];
                 for (let i in data) {
                     plot.push({

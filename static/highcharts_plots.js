@@ -565,23 +565,23 @@ $(function () {
 
     // bar
     {
-        let data = get_data('boxplot', 100);
-        let keys = [];
-        let data_format = [];
+        let data = get_data('error_bar', 5);
+        let vals = [];
+        let borders = [];
         for (let i in data) {
-            keys.push(i);
-            data_format.push(data[i]);
+            vals.push(data[i][0]);
+            borders.push([data[i][1], data[i][2]]);
         }
+        begin = Date.now();
         Highcharts.chart('bar-highcharts-2', {
             chart: {
                 zoomType: 'xy'
             },
             title: {
-                text: 'Highcharts bar for 100 values'
+                text: 'Highcharts bar for 5 cols'
             },
             xAxis: [{
-                // categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                categories: keys,
+                categories: Object.keys(data),
             }],
             yAxis: [{ // Primary yAxis
                 labels: {
@@ -592,7 +592,6 @@ $(function () {
                     style: {}
                 },
             }],
-
             tooltip: {
                 shared: true
             },
@@ -600,61 +599,151 @@ $(function () {
             legend: {
                 enabled: false,
             },
-            // series: [{
-            //     name: 'Histogram',
-            //     type: 'histogram',
-            //     baseSeries: 's1',
-            //     zIndex: -1
-            // }, {
-            //     visible: false,
-            //     name: 'Data',
-            //     type: 'scatter',
-            //     data: data,
-            //     id: 's1',
-            //     marker: {
-            //         radius: 0
-            //     }
-            // }]
-            series: [
-                    {
-                    type: 'column',
-                    yAxis: 1,
-                    data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
-                    tooltip: {
-                        pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f} mm</b> '
-                    }
-                },
-
-                // {
-                //     type: 'bar',
-                //     yAxis: 1,
-                //     data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
-                //     tooltip: {
-                //         pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f} mm</b> '
-                //     }
-                // },
-                {
-                    type: 'errorbar',
-                    yAxis: 1,
-                    data: [[48, 51], [68, 73], [92, 110], [128, 136], [140, 150], [171, 179], [135, 143], [142, 149], [204, 220], [189, 199], [95, 110], [52, 56]],
-                    tooltip: {
-                        pointFormat: '(error range: {point.low}-{point.high} mm)<br/>'
-                    }
-                }, {
-                    visible: false,
-                    type: 'spline',
-                    data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
-                    tooltip: {
-                        pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f}°C</b> '
-                    }
-                }, {
-                    type: 'errorbar',
-                    data: [[6, 8], [5.9, 7.6], [9.4, 10.4], [14.1, 15.9], [18.0, 20.1], [21.0, 24.0], [23.2, 25.3], [26.1, 27.8], [23.2, 23.9], [18.0, 21.1], [12.9, 14.0], [7.6, 10.0]],
-                    tooltip: {
-                        pointFormat: '(error range: {point.low}-{point.high}°C)<br/>'
-                    }
-                }]
+            series: [{
+                type: 'column',
+                yAxis: 1,
+                data: vals,
+                tooltip: {
+                    pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f} mm</b> '
+                }
+            }, {
+                type: 'errorbar',
+                yAxis: 1,
+                data: borders,
+                tooltip: {
+                    pointFormat: '(error range: {point.low}-{point.high} mm)<br/>'
+                }
+            }, {
+                visible: false,
+                type: 'spline',
+                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+                tooltip: {
+                    pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f}°C</b> '
+                }
+            }]
         });
+        end = Date.now();
+        $('#bar-highcharts-2').after('<p style="text-align: center;">' + (end - begin) + ' ms</p>');
+
+        data = get_data('error_bar', 20);
+        vals = [];
+        borders = [];
+        for (let i in data) {
+            vals.push(data[i][0]);
+            borders.push([data[i][1], data[i][2]]);
+        }
+        begin = Date.now();
+        Highcharts.chart('bar-highcharts-3', {
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: 'Highcharts bar for 20 cols'
+            },
+            xAxis: [{
+                categories: Object.keys(data),
+            }],
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    style: {}
+                },
+            }, { // Secondary yAxis
+                labels: {
+                    style: {}
+                },
+            }],
+            tooltip: {
+                shared: true
+            },
+
+            legend: {
+                enabled: false,
+            },
+            series: [{
+                type: 'column',
+                yAxis: 1,
+                data: vals,
+                tooltip: {
+                    pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f} mm</b> '
+                }
+            }, {
+                type: 'errorbar',
+                yAxis: 1,
+                data: borders,
+                tooltip: {
+                    pointFormat: '(error range: {point.low}-{point.high} mm)<br/>'
+                }
+            }, {
+                visible: false,
+                type: 'spline',
+                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+                tooltip: {
+                    pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f}°C</b> '
+                }
+            }]
+        });
+        end = Date.now();
+        $('#bar-highcharts-3').after('<p style="text-align: center;">' + (end - begin) + ' ms</p>');
+
+        data = get_data('error_bar', 50);
+        vals = [];
+        borders = [];
+        for (let i in data) {
+            vals.push(data[i][0]);
+            borders.push([data[i][1], data[i][2]]);
+        }
+        begin = Date.now();
+        Highcharts.chart('bar-highcharts-4', {
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: 'Highcharts bar for 50 cols'
+            },
+            xAxis: [{
+                categories: Object.keys(data),
+            }],
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    style: {}
+                },
+            }, { // Secondary yAxis
+                labels: {
+                    style: {}
+                },
+            }],
+            tooltip: {
+                shared: true
+            },
+
+            legend: {
+                enabled: false,
+            },
+            series: [{
+                type: 'column',
+                yAxis: 1,
+                data: vals,
+                tooltip: {
+                    pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f} mm</b> '
+                }
+            }, {
+                type: 'errorbar',
+                yAxis: 1,
+                data: borders,
+                tooltip: {
+                    pointFormat: '(error range: {point.low}-{point.high} mm)<br/>'
+                }
+            }, {
+                visible: false,
+                type: 'spline',
+                data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+                tooltip: {
+                    pointFormat: '<span style="font-weight: bold; color: {series.color}">{series.name}</span>: <b>{point.y:.1f}°C</b> '
+                }
+            }]
+        });
+        end = Date.now();
+        $('#bar-highcharts-4').after('<p style="text-align: center;">' + (end - begin) + ' ms</p>');
     }
 
     // parallel
