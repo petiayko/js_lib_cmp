@@ -256,8 +256,262 @@ $(function () {
     }
 
     // boxplot
+    {
+        {
+            let data = get_data('boxplot', 100);
+            let values = [];
+            let labels = Object.keys(data).sort();
+            for (let i in labels) {
+                values.push({value: data[labels[i]].join(', ')});
+                labels[i] = {label: labels[i]};
+            }
+
+            begin = Date.now();
+            const dataSource = {
+                chart: {
+                    caption: "Fusioncharts suite boxplot for 100 values",
+                    theme: "fusion",
+                    plottooltext:
+                        "<b>Distribution for $label:</b><br>Max: <b>$$maxDataValue</b><br>Q3: <b>$$Q3</b><br>Median: <b>$$median</b><br>Q1: <b>$$Q1</b><br>Min: <b>$$minDataValue</b>",
+                    mediancolor: "#FFFFFF"
+                },
+                categories: [{
+                    category: labels
+                }],
+                dataset: [{
+                    data: values
+                }]
+            };
+            FusionCharts.ready(function () {
+                new FusionCharts({
+                    type: "boxandwhisker2d",
+                    renderAt: "boxplot-fcs-2",
+                    width: "100%",
+                    height: "100%",
+                    dataFormat: "json",
+                    dataSource
+                }).render();
+            });
+            end = Date.now();
+            $('#boxplot-fcs-2').after('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+        }
+
+        {
+            let data = get_data('boxplot', 1000);
+            let values = [];
+            let labels = Object.keys(data).sort();
+            for (let i in labels) {
+                values.push({value: data[labels[i]].join(', ')});
+                labels[i] = {label: labels[i]};
+            }
+
+            begin = Date.now();
+            const dataSource = {
+                chart: {
+                    caption: "Fusioncharts suite boxplot for 1000 values",
+                    theme: "fusion",
+                    plottooltext:
+                        "<b>Distribution for $label:</b><br>Max: <b>$$maxDataValue</b><br>Q3: <b>$$Q3</b><br>Median: <b>$$median</b><br>Q1: <b>$$Q1</b><br>Min: <b>$$minDataValue</b>",
+                    mediancolor: "#FFFFFF"
+                },
+                categories: [{
+                    category: labels
+                }],
+                dataset: [{
+                    data: values
+                }]
+            };
+            FusionCharts.ready(function () {
+                new FusionCharts({
+                    type: "boxandwhisker2d",
+                    renderAt: "boxplot-fcs-3",
+                    width: "100%",
+                    height: "100%",
+                    dataFormat: "json",
+                    dataSource
+                }).render();
+            });
+            end = Date.now();
+            $('#boxplot-fcs-3').after('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+        }
+
+        {
+            let data = get_data('boxplot', 10000);
+            let values = [];
+            let labels = Object.keys(data).sort();
+            for (let i in labels) {
+                values.push({value: data[labels[i]].join(', ')});
+                labels[i] = {label: labels[i]};
+            }
+
+            begin = Date.now();
+            const dataSource = {
+                chart: {
+                    caption: "Fusioncharts suite boxplot for 10000 values",
+                    theme: "fusion",
+                    plottooltext:
+                        "<b>Distribution for $label:</b><br>Max: <b>$$maxDataValue</b><br>Q3: <b>$$Q3</b><br>Median: <b>$$median</b><br>Q1: <b>$$Q1</b><br>Min: <b>$$minDataValue</b>",
+                    mediancolor: "#FFFFFF"
+                },
+                categories: [{
+                    category: labels
+                }],
+                dataset: [{
+                    data: values
+                }]
+            };
+            FusionCharts.ready(function () {
+                new FusionCharts({
+                    type: "boxandwhisker2d",
+                    renderAt: "boxplot-fcs-4",
+                    width: "100%",
+                    height: "100%",
+                    dataFormat: "json",
+                    dataSource
+                }).render();
+            });
+            end = Date.now();
+            $('#boxplot-fcs-4').after('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+        }
+    }
 
     // bar
+    {
+        {
+            let data = get_data('error_bar', 10);
+            let cats = [];
+            let vals = []
+            for (let key of Object.keys(data)) {
+                cats.push({label: key});
+                vals.push({
+                    value: data[key][0],
+                    errorvalue: (data[key][2] - data[key][1]) / 2
+                });
+            }
+            cats.sort(function (a, b) {
+                return a.label - b.label;
+            });
+
+            begin = Date.now();
+            const dataSource = {
+                chart: {
+                    caption: "Fusioncharts suite bar for 10 values",
+                    theme: "fusion",
+                    halferrorbar: "0",
+                    plottooltext: "$label: <b>$dataValue</b> with error <b>$dataErrorvalue</b>"
+                },
+                categories: [{
+                    category: cats
+                }],
+                dataset: [{
+                    anchorbgcolor: "#1539e7",
+                    data: vals
+                }]
+            };
+            FusionCharts.ready(function () {
+                new FusionCharts({
+                    type: "errorbar2d",
+                    renderAt: "bar-fcs-2",
+                    width: "100%",
+                    height: "100%",
+                    dataFormat: "json",
+                    dataSource
+                }).render();
+            });
+            end = Date.now();
+            $('#bar-fcs-2').after('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+        }
+
+        {
+            let data = get_data('error_bar', 20);
+            let cats = [];
+            let vals = []
+            for (let key of Object.keys(data)) {
+                cats.push({label: key});
+                vals.push({
+                    value: data[key][0],
+                    errorvalue: (data[key][2] - data[key][1]) / 2
+                });
+            }
+            cats.sort(function (a, b) {
+                return a.label - b.label;
+            });
+
+            begin = Date.now();
+            const dataSource = {
+                chart: {
+                    caption: "Fusioncharts suite bar for 20 values",
+                    theme: "fusion",
+                    halferrorbar: "0",
+                    plottooltext: "$label: <b>$dataValue</b> with error <b>$dataErrorvalue</b>"
+                },
+                categories: [{
+                    category: cats
+                }],
+                dataset: [{
+                    anchorbgcolor: "#1539e7",
+                    data: vals
+                }]
+            };
+            FusionCharts.ready(function () {
+                new FusionCharts({
+                    type: "errorbar2d",
+                    renderAt: "bar-fcs-3",
+                    width: "100%",
+                    height: "100%",
+                    dataFormat: "json",
+                    dataSource
+                }).render();
+            });
+            end = Date.now();
+            $('#bar-fcs-3').after('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+        }
+
+        {
+            let data = get_data('error_bar', 50);
+            let cats = [];
+            let vals = []
+            for (let key of Object.keys(data)) {
+                cats.push({label: key});
+                vals.push({
+                    value: data[key][0],
+                    errorvalue: (data[key][2] - data[key][1]) / 2
+                });
+            }
+            cats.sort(function (a, b) {
+                return a.label - b.label;
+            });
+
+            begin = Date.now();
+            const dataSource = {
+                chart: {
+                    caption: "Fusioncharts suite bar for 50 values",
+                    theme: "fusion",
+                    halferrorbar: "0",
+                    plottooltext: "$label: <b>$dataValue</b> with error <b>$dataErrorvalue</b>"
+                },
+                categories: [{
+                    category: cats
+                }],
+                dataset: [{
+                    anchorbgcolor: "#1539e7",
+                    data: vals
+                }]
+            };
+            FusionCharts.ready(function () {
+                new FusionCharts({
+                    type: "errorbar2d",
+                    renderAt: "bar-fcs-4",
+                    width: "100%",
+                    height: "100%",
+                    dataFormat: "json",
+                    dataSource
+                }).render();
+            });
+            end = Date.now();
+            $('#bar-fcs-4').after('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+        }
+    }
 
     // parallel
 })
