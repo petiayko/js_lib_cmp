@@ -6,4 +6,4 @@
 В PyCharm можно открыть [файл /design/main.html](https://github.com/petiayko/js_lib_cmp/blob/master/design/main.html).
 Открыть `/design/main.html` как обычный файл через браузер не получится. 
 # Примечание
-Графики оформлены без прицела на качество
+Графики оформлены без прицела на качество.

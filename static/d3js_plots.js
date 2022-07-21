@@ -129,13 +129,29 @@ $(function () {
 
         // bar
         {
-            let data = get_data('error_bar', 100);
-            // begin = Date.now();
+            let data = get_data('error_bar', 5);
+            begin = Date.now();
             draw_d3_bar('#bar-d3js-2', data, {
-                title: 'D3js boxplot for 100 values'
+                title: 'D3js error bars for 5 columns'
             })
-            // end = Date.now();
-            // $('#boxplot-d3js-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+            end = Date.now();
+            $('#bar-d3js-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+
+            data = get_data('error_bar', 20);
+            begin = Date.now();
+            draw_d3_bar('#bar-d3js-3', data, {
+                title: 'D3js error bars for 20 columns'
+            })
+            end = Date.now();
+            $('#bar-d3js-3').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+
+            data = get_data('error_bar', 50);
+            begin = Date.now();
+            draw_d3_bar('#bar-d3js-4', data, {
+                title: 'D3js error bars for 50 columns'
+            })
+            end = Date.now();
+            $('#bar-d3js-4').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
         }
 
         // parallel
@@ -899,36 +915,43 @@ function draw_d3_boxplot(id, data, layout) {
         .style("width", 80);
 }
 
-function draw_d3_bar(id, data_, layout) {
-    let data = d3.range(40).map(function (i) {
+function draw_d3_bar(id, data, layout) {
+    let data__ = d3.range(40).map(function (i) {
+        let max = d3.randomUniform(1, 5)();
         return {
             x: i + 1,
             // generate a random value between 40 and 60
             y: d3.randomUniform(40, 60)(),
             // generate a random interval between 1 and 5
-            e: d3.randomUniform(1, 5)()
+            max: max,
+            min: max - 5,
         };
     });
 
-    // let data = [
-    //     {
-    //         x: 1,
-    //         y: 59,
-    //         e: 1.38
-    //     }, {
-    //         x: 2,
-    //         y: 44,
-    //         e: 4
-    //     }, {
-    //         x: 3,
-    //         y: 32,
-    //         e: 2
-    //     }, {
-    //         x: 4,
-    //         y: 39,
-    //         e: 7
-    //     },
-    // ]
+    // console.log(data__);
+    // console.log(data);
+
+    let labels = Object.keys(data);
+    let data_format = [];
+    let global_max = -Infinity;
+    let global_min = Infinity;
+    for (let key in data) {
+        let max = data[key][2];
+        let min = data[key][1];
+        if (max > global_max) {
+            global_max = max;
+        }
+        if (min < global_min) {
+            global_min = min;
+        }
+        data_format.push({
+            x: Number(key),
+            y: data[key][0],
+            min: min,
+            max: max
+        });
+    }
+    console.log(data_format);
 
     let width = 1700;
     let height = 700;
@@ -947,17 +970,52 @@ function draw_d3_bar(id, data_, layout) {
 
     let x = d3.scaleLinear()
         .range([0, chartWidth])
-        .domain([0, 40]);
+        // .domain([0, 40]);
+        .domain([d3.min(labels, function (d) {
+            return +d
+        }) * 0.25, d3.max(labels, function (d) {
+            return +d
+        }) * 1.25]);
 
     let y = d3.scaleLinear()
         .range([chartHeight, 0])
-        .domain([0, 100]);
+        .domain([global_min * 0.25, global_max * 1.25]);
+
+    const tooltip = d3.select(id)
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "5px")
+        .style("padding", "10px")
+
+    const mouseover = function (event, d) {
+        tooltip
+            .style("opacity", 1)
+    }
+
+    const mousemove = function (event, d) {
+        tooltip
+            .html('x=' + d.x + ', y=' + d.y + ', \nmax=' + d.max + ', min=' + d.min)
+            .style("left", (event.x) / 2 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+            .style("top", (event.y) / 2 + "px")
+    }
+
+    const mouseleave = function (event, d) {
+        tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0)
+    }
 
     let addData = function () {
         let points = g.selectAll('circle.point')
-            .data(data);
+            .data(data_format);
 
-        points.enter()
+        points
+            .enter()
             .append('circle')
             .attr('class', 'point')
             .attr('r', 2)
@@ -967,10 +1025,10 @@ function draw_d3_bar(id, data_, layout) {
             })
             .attr('cy', function (d) {
                 return y(d.y);
-            })
+            });
 
         let lines = g.selectAll('line.error')
-            .data(data);
+            .data(data_format);
 
         lines
             .enter()
@@ -984,11 +1042,36 @@ function draw_d3_bar(id, data_, layout) {
                 return x(d.x);
             })
             .attr('y1', function (d) {
-                return y(d.y + d.e);
+                return y(d.min);
             })
             .attr('y2', function (d) {
-                return y(d.y - d.e);
-            });
+                return y(d.max);
+            })
+            .style("stroke", "black");
+
+        let barwidth = 20;
+
+        svg
+            .selectAll("boxes")
+            .data(data_format)
+            .enter()
+            .append("rect")
+            .attr("x", function (d) {
+                return (margin.left + x(d.x) - barwidth / 2)
+            })
+            .attr("y", function (d) {
+                return margin.top + y(d.y)
+            })
+            .attr("height", function (d) {
+                return chartHeight - y(d.y)
+            })
+            .attr("width", barwidth)
+            .attr("stroke", "black")
+            .style("opacity", 0.5)
+            .style("fill", "#334de8")
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseleave", mouseleave);
     };
 
     // axes
@@ -1000,26 +1083,32 @@ function draw_d3_bar(id, data_, layout) {
 
     addData();
 
-    // resize
-    window.onresize = function () {
-        width = document.documentElement.clientWidth;
-        height = document.documentElement.clientHeight;
+    svg.append("text")
+        .attr("text-anchor", "end")
+        .attr("x", width / 2)
+        .attr("y", 15)
+        .text(layout.title);
 
-        svg.attr('width', width).attr('height', height)
-
-        chartWidth = width - margin.left - margin.right;
-        chartHeight = height - margin.top - margin.bottom;
-
-        x.range([0, chartWidth]);
-        y.range([chartHeight, 0]);
-
-        xAxis
-            .attr('transform', 'translate(0,' + chartHeight + ')')
-            .call(d3.axisBottom(x));
-        yAxis.call(d3.axisLeft(y));
-
-        addData();
-    };
+    // // resize
+    // window.onresize = function () {
+    //     width = document.documentElement.clientWidth;
+    //     height = document.documentElement.clientHeight;
+    //
+    //     svg.attr('width', width).attr('height', height)
+    //
+    //     chartWidth = width - margin.left - margin.right;
+    //     chartHeight = height - margin.top - margin.bottom;
+    //
+    //     x.range([0, chartWidth]);
+    //     y.range([chartHeight, 0]);
+    //
+    //     xAxis
+    //         .attr('transform', 'translate(0,' + chartHeight + ')')
+    //         .call(d3.axisBottom(x));
+    //     yAxis.call(d3.axisLeft(y));
+    //
+    //     addData();
+    // };
 }
 
 function draw_d3_parallel(id, data, layout) {
