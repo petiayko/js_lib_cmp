@@ -128,6 +128,15 @@ $(function () {
         }
 
         // bar
+        {
+            let data = get_data('error_bar', 100);
+            // begin = Date.now();
+            draw_d3_bar('#bar-d3js-2', data, {
+                title: 'D3js boxplot for 100 values'
+            })
+            // end = Date.now();
+            // $('#boxplot-d3js-2').append('<p style="text-align: center">' + (end - begin) + ' ms</p>');
+        }
 
         // parallel
         {
@@ -890,8 +899,127 @@ function draw_d3_boxplot(id, data, layout) {
         .style("width", 80);
 }
 
-function draw_d3_bar(id, data, layout) {
+function draw_d3_bar(id, data_, layout) {
+    let data = d3.range(40).map(function (i) {
+        return {
+            x: i + 1,
+            // generate a random value between 40 and 60
+            y: d3.randomUniform(40, 60)(),
+            // generate a random interval between 1 and 5
+            e: d3.randomUniform(1, 5)()
+        };
+    });
 
+    // let data = [
+    //     {
+    //         x: 1,
+    //         y: 59,
+    //         e: 1.38
+    //     }, {
+    //         x: 2,
+    //         y: 44,
+    //         e: 4
+    //     }, {
+    //         x: 3,
+    //         y: 32,
+    //         e: 2
+    //     }, {
+    //         x: 4,
+    //         y: 39,
+    //         e: 7
+    //     },
+    // ]
+
+    let width = 1700;
+    let height = 700;
+
+    let margin = {top: 20, right: 20, bottom: 30, left: 50};
+    let chartWidth = width - margin.left - margin.right;
+    let chartHeight = height - margin.top - margin.bottom;
+
+    let svg = d3.select(id)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    let g = svg.append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    let x = d3.scaleLinear()
+        .range([0, chartWidth])
+        .domain([0, 40]);
+
+    let y = d3.scaleLinear()
+        .range([chartHeight, 0])
+        .domain([0, 100]);
+
+    let addData = function () {
+        let points = g.selectAll('circle.point')
+            .data(data);
+
+        points.enter()
+            .append('circle')
+            .attr('class', 'point')
+            .attr('r', 2)
+            .merge(points)
+            .attr('cx', function (d) {
+                return x(d.x);
+            })
+            .attr('cy', function (d) {
+                return y(d.y);
+            })
+
+        let lines = g.selectAll('line.error')
+            .data(data);
+
+        lines
+            .enter()
+            .append('line')
+            .attr('class', 'error')
+            .merge(lines)
+            .attr('x1', function (d) {
+                return x(d.x);
+            })
+            .attr('x2', function (d) {
+                return x(d.x);
+            })
+            .attr('y1', function (d) {
+                return y(d.y + d.e);
+            })
+            .attr('y2', function (d) {
+                return y(d.y - d.e);
+            });
+    };
+
+    // axes
+    let xAxis = g.append('g')
+        .attr('transform', 'translate(0,' + chartHeight + ')')
+        .call(d3.axisBottom(x));
+    let yAxis = g.append('g')
+        .call(d3.axisLeft(y));
+
+    addData();
+
+    // resize
+    window.onresize = function () {
+        width = document.documentElement.clientWidth;
+        height = document.documentElement.clientHeight;
+
+        svg.attr('width', width).attr('height', height)
+
+        chartWidth = width - margin.left - margin.right;
+        chartHeight = height - margin.top - margin.bottom;
+
+        x.range([0, chartWidth]);
+        y.range([chartHeight, 0]);
+
+        xAxis
+            .attr('transform', 'translate(0,' + chartHeight + ')')
+            .call(d3.axisBottom(x));
+        yAxis.call(d3.axisLeft(y));
+
+        addData();
+    };
 }
 
 function draw_d3_parallel(id, data, layout) {
