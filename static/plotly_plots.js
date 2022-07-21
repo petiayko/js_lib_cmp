@@ -308,7 +308,6 @@ $(function () {
 
         // boxplot
         {
-
             {
                 let layout = {
                     title: 'Plotly boxplot for 100 values',
@@ -448,7 +447,7 @@ $(function () {
                     },
                     autosize: true,
                 };
-                let data = get_data('error_bar', 10);
+                let data = get_data('error_bar', 5);
                 let plot = [];
                 for (let i in data) {
                     plot.push({
@@ -701,3 +700,7 @@ $(function () {
         }
     }
 )
+
+$(window).on('load', function () {
+    console.log(get_loading_time());
+})

@@ -59,3 +59,8 @@ function get_data(type, size) {
             return [];
     }
 }
+
+function get_loading_time() {
+    let time = window.performance.timing;
+    return time.loadEventStart - time.navigationStart;
+}

@@ -189,6 +189,10 @@ $(function () {
     }
 )
 
+$(window).on('load', function () {
+    console.log(get_loading_time());
+})
+
 function draw_d3_hist(id, slider_id, slider_div_id, data, layout) {
     const margin = {top: 20, right: 30, bottom: 40, left: 60};
     const width = 1700 - margin.left - margin.right;
@@ -928,9 +932,6 @@ function draw_d3_bar(id, data, layout) {
         };
     });
 
-    // console.log(data__);
-    // console.log(data);
-
     let labels = Object.keys(data);
     let data_format = [];
     let global_max = -Infinity;
@@ -951,7 +952,6 @@ function draw_d3_bar(id, data, layout) {
             max: max
         });
     }
-    console.log(data_format);
 
     let width = 1700;
     let height = 700;

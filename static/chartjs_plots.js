@@ -373,3 +373,7 @@ $(function () {
         // parallel
     }
 )
+
+$(window).on('load', function () {
+    console.log(get_loading_time());
+})

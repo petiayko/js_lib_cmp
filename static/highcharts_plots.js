@@ -56,7 +56,6 @@ $(function () {
         });
         end = Date.now();
         $('#hist-highcharts-2').after('<p style="text-align: center;">' + (end - begin) + ' ms</p>');
-
         data = get_data('hist', 1000);
         begin = Date.now();
         Highcharts.chart('hist-highcharts-3', {
@@ -352,7 +351,7 @@ $(function () {
 
     // scatter-wl
     {
-        let data = get_data('scatter', 100);
+        let data = get_data('scatter', 10000);
         begin = Date.now();
         Highcharts.chart('scatter-wl-highcharts-2', {
             chart: {
@@ -886,7 +885,6 @@ $(function () {
         end = Date.now();
         $('#parallel-highcharts-3').after('<p style="text-align: center;">' + (end - begin) + ' ms</p>');
 
-
         data = get_data('parallel', 100);
         data_format = [];
         for (let i in data.x1) {
@@ -956,4 +954,8 @@ $(function () {
         end = Date.now();
         $('#parallel-highcharts-4').after('<p style="text-align: center;">' + (end - begin) + ' ms</p>');
     }
+})
+
+$(window).on('load', function () {
+    console.log(get_loading_time());
 })

@@ -120,7 +120,7 @@ $(function () {
     // scatter-wl
     {
         {
-            let data = get_data('scatter', 100);
+            let data = get_data('scatter', 10000);
             let values = [];
             let labels = [];
             let data_format = []
@@ -258,7 +258,7 @@ $(function () {
     // boxplot
     {
         {
-            let data = get_data('boxplot', 100);
+            let data = get_data('boxplot', 10000);
             let values = [];
             let labels = Object.keys(data).sort();
             for (let i in labels) {
@@ -378,7 +378,7 @@ $(function () {
     // bar
     {
         {
-            let data = get_data('error_bar', 10);
+            let data = get_data('error_bar', 5);
             let cats = [];
             let vals = []
             for (let key of Object.keys(data)) {
@@ -514,4 +514,8 @@ $(function () {
     }
 
     // parallel
+})
+
+$(window).on('load', function () {
+    console.log(get_loading_time());
 })
