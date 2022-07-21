@@ -120,7 +120,7 @@ $(function () {
     // scatter-wl
     {
         {
-            let data = get_data('scatter', 10000);
+            let data = get_data('scatter', 100);
             let values = [];
             let labels = [];
             let data_format = []
@@ -258,7 +258,7 @@ $(function () {
     // boxplot
     {
         {
-            let data = get_data('boxplot', 10000);
+            let data = get_data('boxplot', 100);
             let values = [];
             let labels = Object.keys(data).sort();
             for (let i in labels) {

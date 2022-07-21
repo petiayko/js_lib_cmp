@@ -351,7 +351,7 @@ $(function () {
 
     // scatter-wl
     {
-        let data = get_data('scatter', 10000);
+        let data = get_data('scatter', 100);
         begin = Date.now();
         Highcharts.chart('scatter-wl-highcharts-2', {
             chart: {

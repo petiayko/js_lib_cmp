@@ -447,7 +447,7 @@ $(function () {
                     },
                     autosize: true,
                 };
-                let data = get_data('error_bar', 5);
+                let data = get_data('error_bar', 10);
                 let plot = [];
                 for (let i in data) {
                     plot.push({
